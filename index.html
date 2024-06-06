@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      height: 100vh;
+      color: white;
+      font-family: sans-serif;
+      font-size: 1.25rem;
+      margin: 0;
+    }
+    
+    h1 {
+      font-weight: normal;
+      margin: 0;
+      font-size: 3.5rem;
+      line-height: 100%;
+    }
+    
+    ::selection {
+      background: white;
+      color: black;
+    }
+    
+    main {
+      background-color: black;
+      mix-blend-mode: multiply;
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    main section {
+      margin: 0 auto;
+      width: min(48rem, calc(100vw - 4rem));
+      padding: 8rem 0;
+      position: relative;
+    }
+    
+    #output h2 {
+      font-weight: normal;
+      margin: 0;
+      margin-top: 1rem;
+      font-size: 2rem;
+    }
+    
+    
+    label {
+      margin-right: 0.5rem;
+    }
+    label::after {
+      content: " =";
+    }
+    input {
+      background-color: black;
+      border: solid 1px white;
+      font-size: inherit;
+      color: white;
+      font-family: inherit;
+      padding: 0.25rem 0.5rem;
+      width: 16rem;
+      margin-right: 3rem;
+    }
+    input:focus {
+      outline: solid 2px white;
+    }
+    
+    #output div > span:first-child {
+      display: inline-block;
+      width: 6rem;
+    }
+    #output div > span:nth-child(2)::before {
+      content: '= ';
+    }
+    
+    a {
+      color: inherit;
+    }
+    a:hover {
+      background-color: white;
+      color: black;
+    }
+    
+    pre {
+      border: solid 1px white;
+      width: 100%;
+      font-family: inherit;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+    
+    #functionnames tr:not([notop]) {
+      border-top: solid 1px gray;
+    }
+    
+    #functionnames th {
+      text-align: center;
+      font-weight: normal;
+      user-select: none;
+      font-size: 0.5rem;
+    }
+    
+    td {
+      line-height: 125%;
+    }
+    
+    #functionnames td:first-child {
+      padding-right: 1rem;
+    }
+    #functionnames td, #functionnames th {
+      padding: 0.125rem 0;
+    }
+    
+    code {
+      border: solid 1px white;
+      font-family: inherit;
+      padding: 0 0.125rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    #multtable th {
+      background-color: white;
+      color: black;
+      font-weight: inherit;
+    }
+    #multtable td, #multtable th {
+      border: solid 1px white;
+      text-align: center;
+    }
+    
+    .decor {
+      position: absolute;
+      animation: infinite ease-in-out 4s wiggle;
+      transition: 1.9s rotate, 0.2s text-shadow, 0.2s scale;
+      user-select: none;
+    }
+    .decor:hover {
+      text-shadow: 0 0 0.25rem white;
+      scale: 1.25;
+    }
+    @keyframes wiggle {
+      from {
+        transform: translateY(-0.25rem);
+      }
+      50% {
+        transform: translateY(0.25rem);
+      }
+      to {
+        transform: translateY(-0.25rem);
+      }
+    }
+  </style>
+  <title>CCDSC numbers</title>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>commutative, complex, dual, split-complex numbers<div style="font-size: 2rem;">a.k.a. CCDSC numbers</div></h1>
+      <p>This is a JavaScript library for working with the extension of the real numbers including:</p>
+      <ul>
+        <li><var>i</var> such that <var>i</var><sup>2</sup> = -1</li>
+        <li><var>j</var> such that <var>j</var><sup>2</sup> = 1</li>
+        <li><var>ϵ</var> such that <var>ϵ</var><sup>2</sup> = 0</li>
+      </ul>
+      <p>Together, these systems are commutative for multiplication, and all functions are well-defined thanks to power series and some matrix algebra. Here's a multiplication table.</p>
+      <table style="table-layout: fixed;" id="multtable">
+        <tr><th></th><th>1</th><th><var>i</var></th><th><var>j</var></th><th><var>ij</var></th><th>ϵ</th><th><var>iϵ</var></th><th><var>jϵ</var></th><th><var>ijϵ</var></th></tr>
+        <tr><th>1</th><td>1</td><td><var>i</var></td><td><var>j</var></td><td><var>ij</var></td><td>ϵ</td><td><var>iϵ</var></td><td><var>jϵ</var></td><td><var>ijϵ</var></td></tr>
+        <tr><th><var>i</var></th><td><var>i</var></td><td>-1</td><td><var>ij</var></td><td>-<var>j</var></td><td><var>iϵ</var></td><td>-<var>ϵ</var></td><td><var>ijϵ</var></td><td>-<var>jϵ</var></td></tr>
+        <tr><th><var>j</var></th><td><var>j</var></td><td><var>ij</var></td><td>1</td><td><var>i</var></td><td>jϵ</td><td><var>ijϵ</var></td><td><var>ϵ</var></td><td><var>iϵ</var></td></tr>
+        <tr><th><var>ij</var></th><td><var>ij</var></td><td>-<var>j</var></td><td><var>i</var></td><td>-1</td><td><var>ijϵ</var></td><td>-<var>jϵ</var></td><td><var>iϵ</var></td><td>-<var>ϵ</var></td></tr>
+        <tr><th><var>ϵ</var></th><td>ϵ</td><td><var>iϵ</var></td><td><var>jϵ</var></td><td><var>ijϵ</var></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><th><var>iϵ</var></th><td><var>iϵ</var></td><td>-<var>ϵ</var></td><td><var>ijϵ</var></td><td>-<var>jϵ</var></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><th><var>jϵ</var></th><td>jϵ</td><td><var>ijϵ</var></td><td><var>ϵ</var></td><td><var>iϵ</var></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><th><var>ijϵ</var></th><td><var>ijϵ</var></td><td>-<var>jϵ</var></td><td><var>iϵ</var></td><td>-<var>ϵ</var></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      </table>
+      <p>Currently, the inverse trigonometric/hyperbolic functions (as defined using their normal complex definitions) do not actually work! <u>Do not use the inverse trigonometric/hyperbolic functions!</u></p>
+      <p>You can include it in your projects by downloading and using <a target="_blank" href="https://github.com/Astronomy487/ccdsc/blob/main/ccdsc.js">ccdsc.js</a>. You can also reference the version hosted on GitHub Pages for this very webpage:</p>
+      <pre>&lt;script src="https://astronomy487.github.io/ccdsc/ccdsc.js"></script></pre>
+      <p>Everything is housed in the global object <code>ccdsc</code>, which has the following functions. Functions with number/string arguments are automatically converted to CCDSC objects. Names try to follow the conventions of the Math class.</p>
+      <table id="functionnames">
+        <tr notop><td>ccdsc.make(x)</td><td>Make a CCDSC number from a string or number x<br>("ϵ" can be written as "e")</td></tr>
+        <tr notop><th>&nbsp;</th></tr>
+        <tr notop><td>ccdsc.add(a, b, &hellip;)</td><td>Adds numbers together</td></tr>
+        <tr><td>ccdsc.multiply(a, b, &hellip;)</td><td>Multiplies numbers together</td></tr>
+        <tr><td>ccdsc.divide(a, b)</td><td>Divides a/b</td></tr>
+        <tr><td>ccdsc.subtract(a, b)</td><td>Subtracts a-b</td></tr>
+        <tr notop><th>&nbsp;</th></tr>
+        <tr notop><td>ccdsc.abs(x)</td><td>Gets the magnitude of a</td></tr>
+        <tr><td>ccdsc.sign(x)</td><td>Returns x scaled to have magnitude 1</td></tr>
+        <tr notop><th>&nbsp;</th></tr>
+        <tr notop><td>ccdsc.exp(x)</td><td>Gets the exponential function of x</td></tr>
+        <tr><td>ccdsc.expm1(x)</td><td>Gets the exponential function of x, minus 1</td></tr>
+        <tr><td>ccdsc.log(x)</td><td>Gets the principal natural logarithm of x</td></tr>
+        <tr><td>ccdsc.log10(x)</td><td>Gets the principal logarithm (base 10) of x</td></tr>
+        <tr><td>ccdsc.log2(x)</td><td>Gets the principal logarithm (base 2) of x</td></tr>
+        <tr><td>ccdsc.log1p(x)</td><td>Gets the principal natural logarithm of (x+1)</td></tr>
+        <tr notop><th>&nbsp;</th></tr>
+        <tr notop><td>ccdsc.pow(a, b)</td><td>Gets a to the power b</td></tr>
+        <tr><td>ccdsc.sqrt(x)</td><td>Gets the principal square root of x</td></tr>
+        <tr><td>ccdsc.cbrt(x)</td><td>Gets the principal cube root of x</td></tr>
+      </table>
+      <p>The 24 trigonometric/hyperbolic functions and their inverses are named according to the pattern {∅|a}{sin|cos|tan|csc|sec|cot}{∅|h}. <u>Remember that the inverse trigonometric/hyperbolic functions are not working correctly right now.</u></p>
+      <p>The <code>ccdsc</code> object also contains the following constants:</p>
+      <table id="functionnames">
+        <tr notop><td style="width: 20rem;">ccdsc.ZERO</td><td>0</td></tr>
+        <tr><td>ccdsc.ONE</td><td>1</td></tr>
+        <tr><td>ccdsc.NEGATIVE_ONE</td><td>- 1</td></tr>
+        <tr><td>ccdsc.I</td><td><var>i</var></td></tr>
+        <tr><td>ccdsc.NEGATIVE_I</td><td>- <var>i</var></td></tr>
+        <tr><td>ccdsc.NEGATIVE_HALF_I</td><td>- &half;<var>i</var></td></tr>
+        <tr><td>ccdsc.HALF_I</td><td>&half;<var>i</var></td></tr>
+        <tr><td>ccdsc.PI_I</td><td>π<var>i</var></td></tr>
+      </table>
+      <p>A CCDSC object stores its components as eight numbers in the following fields:</p>
+      <table style="table-layout: fixed;"><tr>
+        <td>.real</td>
+        <td>.i</td>
+        <td>.j</td>
+        <td>.ij</td>
+        <td>.e</td>
+        <td>.ie</td>
+        <td>.je</td>
+        <td>.ije</td>
+      </tr></table>
+      <p>The class for the numbers themselves, <code>ccdsc.CCDSC</code>, has the following methods:</p>
+      <table id="functionnames">
+        <tr notop><td>constructor(...)</td><td>Constructs a number from a string/number/list/object</td></tr>
+        <tr><td>a.toString(digits = 5)</td><td>Writes to a string, to a given amount of precision</td></tr>
+        <tr><td>a.toTex(digits = 5)</td><td>Writes to a TeX string, to a given amount of precision</td></tr>
+        <tr><td>a.toHtml(digits = 5)</td><td>Writes to an HTML string, to a given amount of precision</td></tr>
+        <tr><td>a.plus(b)</td><td>Returns a + b</td></tr>
+        <tr><td>a.minus(b)</td><td>Returns a - b</td></tr>
+        <tr><td>a.times(b)</td><td>Returns a b</td></tr>
+        <tr><td>a.scale(b)</td><td>Returns a b for a real number b (b is not a CCDSC object)</td></tr>
+        <tr><td>a.over(b)</td><td>Returns a / b; uses rref on an 8x8 matrix</td></tr>
+        <tr><td>a.exp()</td><td>Returns e^a</td></tr>
+        <tr><td>a.ln()</td><td>Returns ln a; uses .exp() to check work before returning</td></tr>
+        <tr><td>a.magnitude()</td><td>Returns the magnitude of a as a real number<br>(not a CCDSC object; ignores ϵ terms)</td></tr>
+        <tr><td>a.equals(b, tolerance)</td><td>Checks if terms of a and b are identical within some tolerance<br>(default tolerance of 10e-10)</td></tr>
+      </table>
+      <p>The part of the logarithm function involved in evaluating ln(<var>a</var>+<var>bj</var>) for complex <var>a</var>, <var>b</var> sometimes returns the logarithm of <var>a</var>-<var>bj</var>. For this reason, when evaluating logarithms, this library will check its work and try adjustments.</p>
+      <p>You can try out commutative-complex-dual-split-complex functions and arithmetic here. When an inverse trigonometric/hyperbolic function returns an incorrect answer, it will let you know.</p>
+      <label for="input1"><var>a</var></label><input id="input1" type="text" oninput="run()"><label for="input2"><var>b</var></label><input id="input2" type="text" oninput="run()">
+      <div id="output"></div>
+    </section>
+  </main>
+  <script src="ccdsc.js"></script>
+  <script>
+    let outputs = [
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+      output.appendChild(document.createElement("div")),
+    ];
+    
+    let testCasesText = [
+      "<var>a</var>",
+      "<var>b</var>",
+      "<var>a</var>+<var>b</var>",
+      "<var>ab</var>",
+      "<var>a</var>-<var>b</var>",
+      "<var>a</var>/<var>b</var>",
+      "<var>e</var><sup><var>a</var></sup>",
+      "ln <var>a</var>",
+      "<var>a</var><sup><var>b</var></sup>",
+      "log<sub><var>b</var></sub> <var>a</var>",
+      "sqrt <var>a</var>"
+    ];
+    {
+      let i = 11;
+      for (let trig of ["sin", "cos", "tan", "csc", "sec", "cot"])
+        for (let h of ["", "h"]) {
+          testCasesText[i] = trig + h + " <var>a</var>";
+          i++;
+        }
+      for (let trig of ["sin", "cos", "tan", "csc", "sec", "cot"])
+        for (let h of ["", "h"]) {
+          testCasesText[i] = "a" + trig + h + " <var>a</var>";
+          i++;
+        }
+    }
+    
+    let title = document.createElement("h2");
+    outputs[11].before(title);
+    title.innerText = "Trigonometric and hyperbolic functions";
+    
+    title = document.createElement("h2");
+    outputs[11+12].before(title);
+    title.innerText = "Inverse trigonometric and hyperbolic functions\n[sometimes wrong]";
+    
+    title = document.createElement("h2");
+    outputs[2].before(title);
+    title.innerText = "Normal arithmetic";
+    
+    title = document.createElement("h2");
+    outputs[0].before(title);
+    title.innerText = "Inputs";
+    
+    for (let i = 0; i < outputs.length; i++) {
+      outputs[i].appendChild(document.createElement("span")).innerHTML = testCasesText[i];
+      outputs[i] = outputs[i].appendChild(document.createElement("span"));
+    }
+    
+    function run() {
+      let a = ccdsc.make(input1.value);
+      let b = ccdsc.make(input2.value);
+      outputs[0].innerHTML = a.toHtml();
+      outputs[1].innerHTML = b.toHtml();
+      
+      try {
+        outputs[2].innerHTML = ccdsc.add(a,b).toHtml();
+      } catch(e) {
+        outputs[2].innerHTML = "undefined";
+      }
+      try {
+        outputs[3].innerHTML = ccdsc.multiply(a,b).toHtml();
+      } catch(e) {
+        outputs[3].innerHTML = "undefined";
+      }
+      try {
+        outputs[4].innerHTML = ccdsc.subtract(a,b).toHtml();
+      } catch(e) {
+        outputs[4].innerHTML = "undefined";
+      }
+      
+      try {
+        outputs[5].innerHTML = ccdsc.divide(a,b).toHtml();
+      } catch(e) {
+        outputs[5].innerHTML = "undefined";
+      }
+      try {
+        outputs[6].innerHTML = ccdsc.exp(a).toHtml();
+      } catch(e) {
+        outputs[6].innerHTML = "undefined";
+      }
+      try {
+        outputs[7].innerHTML = ccdsc.log(a).toHtml();
+      } catch(e) {
+        outputs[7].innerHTML = "undefined";
+      }
+      try {
+        outputs[8].innerHTML = ccdsc.pow(a, b).toHtml();
+      } catch(e) {
+        outputs[8].innerHTML = "undefined";
+      }
+      try {
+        outputs[9].innerHTML = ccdsc.divide(ccdsc.log(a), ccdsc.log(b)).toHtml();
+      } catch(e) {
+        outputs[9].innerHTML = "undefined";
+      }
+      try {
+        outputs[10].innerHTML = ccdsc.sqrt(a).toHtml();
+      } catch(e) {
+        outputs[10].innerHTML = "undefined";
+      }
+      
+      
+      let i = 11;
+      /* for (let trig of ["sin", "cos", "tan", "csc", "sec", "cot"])
+        for (let h of ["", "h"]) {
+          try {
+            outputs[i].innerText = ccdsc[trig+h](a).toString();
+          } catch(e) {
+            outputs[i].innerText = "undefined";
+          }
+          i++;
+          try {
+            let val = ccdsc["a"+trig+h](a);
+            outputs[i].innerText = val.toString();
+            if (!ccdsc[trig+h](val).equals(a))
+              outputs[i].innerHTML += "<span style=\"float: right;\">[a"+trig+h+" is incorrect]</span>";
+          } catch(e) {
+            outputs[i].innerHTML = "undefined";
+          }
+          i++;
+        } */
+      
+      for (let trig of ["sin", "cos", "tan", "csc", "sec", "cot"])
+        for (let h of ["", "h"]) {
+          try {
+            outputs[i].innerHTML = ccdsc[trig+h](a).toHtml();
+          } catch(e) {
+            outputs[i].innerHTML = "undefined";
+          }
+          i++;
+        }
+      
+      for (let trig of ["sin", "cos", "tan", "csc", "sec", "cot"])
+        for (let h of ["", "h"]) {
+          try {
+            let val = ccdsc["a"+trig+h](a);
+            outputs[i].innerHTML = val.toHtml();
+            if (!ccdsc[trig+h](val).equals(a))
+              outputs[i].innerHTML += "<span style=\"float: right;\">[a"+trig+h+" is incorrect]</span>";
+          } catch(e) {
+            outputs[i].innerHTML = "undefined";
+          }
+          i++;
+        }
+      
+      for (let o of outputs)
+      for (let o of outputs) {
+        if (o.innerText.includes("undefined")) {
+          o.parentElement.style.color = "gray";
+        } else if (o.innerText.includes("incorrect")) {
+          o.parentElement.style.color = "gray";
+        } else {
+          o.parentElement.style.color = "white";
+        }
+      }
+    }
+    
+    do {
+      input1.value = new ccdsc.CCDSC(...[1,2,3,4].map(x => Math.floor(Math.random()*7)-3), 0, 0, 0, 0).toString().replaceAll(" ","");
+      input2.value = new ccdsc.CCDSC(...[1,2,3,4].map(x => Math.floor(Math.random()*7)-3), 0, 0, 0, 0).toString().replaceAll(" ","");
+      run();
+    } while (outputs[9].innerText.includes("undefined"));
+    
+    document.querySelector("body").style.background = "linear-gradient(" + [
+      ["cyan", "magenta", "yellow", "cyan"],
+      ["cyan", "yellow", "magenta", "cyan"],
+      ["magenta", "yellow", "cyan", "magenta"],
+      ["magenta", "cyan", "yellow", "magenta"],
+      ["yellow", "cyan", "magenta", "yellow"],
+      ["yellow", "magenta", "cyan", "yellow"]
+    ][Math.floor(Math.random()*6)].join(",") + ") fixed";
+    
+    let decorUnits = ["1","i","j","ij","ϵ","iϵ","jϵ","ijϵ"];
+    for (let i = 0; i < 8; i++) {
+      //swap i with random between i and 7 (inclusive)
+      let other = Math.floor(Math.random()*(8-i))+i;
+      [decorUnits[i], decorUnits[other]] = [decorUnits[other], decorUnits[i]];
+    }
+    let parity = Math.floor(Math.random()*2);
+    for (let i = 0; i < 8; i++) {
+      let thing = document.createElement("div");
+      thing.setAttribute("class", "decor");
+      thing.innerText = ((Math.random()<0.5) ? "" : "-") + decorUnits[i];
+      let distanceToSide = ((i-3.5)**2 - 30) * 0.2;
+      thing.style[parity-i%2 ? "left" : "right"] = distanceToSide + "rem";
+      thing.style.top = i*1.25 + 6 + "rem";
+      document.querySelector("h1").before(thing);
+      thing.style.animationDelay = "-" + 100*Math.random() + "s";
+      thing.style.animationDuration = (0.4*Math.random()+0.8)*4 + "s";
+      thing.style.rotate = (Math.random()-0.5)*40 + "deg";
+      setTimeout(function() {
+        setInterval(function() {
+          thing.style.rotate = (Math.random()-0.5)*40 + "deg";
+        }, 2000);
+      }, i*2000/8);
+    }
+  </script>
+</body>
+</html>
