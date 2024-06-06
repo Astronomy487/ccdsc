@@ -64,12 +64,19 @@
       outline: solid 2px white;
     }
     
-    #output div > span:first-child {
+    #output div > span {
       display: inline-block;
+      vertical-align: top;
+      margin: 0.25rem 0;
+    }
+    #output div > span:first-child {
       width: 6rem;
     }
     #output div > span:nth-child(2)::before {
       content: '= ';
+    }
+    #output div > span:nth-child(2) {
+      width: calc(100% - 6rem);
     }
     
     a {
@@ -177,6 +184,27 @@
         <tr><th><var>jϵ</var></th><td>jϵ</td><td><var>ijϵ</var></td><td><var>ϵ</var></td><td><var>iϵ</var></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
         <tr><th><var>ijϵ</var></th><td><var>ijϵ</var></td><td>-<var>jϵ</var></td><td><var>iϵ</var></td><td>-<var>ϵ</var></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
       </table>
+      <p>The matrix representation for a number <var>A</var>+<var>Bi</var>+<var>Cj</var>+<var>Dij</var>+<var>Eϵ</var>+<var>Fiϵ</var>+<var>Gjϵ</var>+<var>Hijϵ</var> is:</p>
+      <table style="table-layout: fixed; width: 40%; margin: 1rem auto; text-align: center;">
+        <tr><td>[</td><td><var>A</var></td><td>-<var>B</var></td><td><var>C</var></td><td>-<var>D</var></td><td>0</td><td>0</td><td>0</td><td>0</td><td>;</td></tr>
+        <tr><td></td><td><var>B</var></td><td><var>A</var></td><td><var>D</var></td><td><var>C</var></td><td>0</td><td>0</td><td>0</td><td>0</td><td>;</td></tr>
+        <tr><td></td><td><var>C</var></td><td>-<var>D</var></td><td><var>A</var></td><td><var>-B</var></td><td>0</td><td>0</td><td>0</td><td>0</td><td>;</td></tr>
+        <tr><td></td><td><var>D</var></td><td><var>C</var></td><td><var>B</var></td><td><var>A</var></td><td>0</td><td>0</td><td>0</td><td>0</td><td>;</td></tr>
+        <tr><td></td><td><var>E</var></td><td>-<var>F</var></td><td><var>G</var></td><td>-<var>H</var></td><td><var>A</var></td><td>-<var>B</var></td><td><var>C</var></td><td><var>-D</var></td><td>;</td></tr>
+        <tr><td></td><td><var>F</var></td><td><var>E</var></td><td><var>H</var></td><td><var>G</var></td><td><var>B</var></td><td><var>A</var></td><td><var>D</var></td><td><var>C</var></td><td>;</td></tr>
+        <tr><td></td><td><var>G</var></td><td>-<var>H</var></td><td><var>E</var></td><td>-<var>F</var></td><td><var>C</var></td><td>-<var>D</var></td><td><var>A</var></td><td>-<var>B</var></td><td>;</td></tr>
+        <tr><td></td><td><var>H</var></td><td><var>G</var></td><td><var>F</var></td><td><var>E</var></td><td><var>D</var></td><td><var>C</var></td><td><var>B</var></td><td><var>A</var></td><td>]</td></tr>
+<!-- [A, -B, C, -D, 0, 0, 0, 0],
+[B, A, D, C, 0, 0, 0, 0],
+[C, -D, A, -B, 0, 0, 0, 0],
+[D, C, B, A, 0, 0, 0, 0],
+
+[E, -F, G, -H, A, -B, C, -D],
+[F, E, H, G, B, A, D, C],
+[G, -H, E, -F, C, -D, A, -B],
+[H, G, F, E, D, C, B, A] -->
+        
+      </table>
       <p>Currently, the inverse trigonometric/hyperbolic functions (as defined using their normal complex definitions) do not actually work! <u>Do not use the inverse trigonometric/hyperbolic functions!</u></p>
       <p>You can include it in your projects by downloading and using <a target="_blank" href="https://github.com/Astronomy487/ccdsc/blob/main/ccdsc.js">ccdsc.js</a>. You can also reference the version hosted on GitHub Pages for this very webpage:</p>
       <pre>&lt;script src="https://astronomy487.github.io/ccdsc/ccdsc.js"></script></pre>
@@ -189,7 +217,7 @@
         <tr><td>ccdsc.divide(a, b)</td><td>Divides a/b</td></tr>
         <tr><td>ccdsc.subtract(a, b)</td><td>Subtracts a-b</td></tr>
         <tr notop><th>&nbsp;</th></tr>
-        <tr notop><td>ccdsc.abs(x)</td><td>Gets the magnitude of a</td></tr>
+        <tr notop><td>ccdsc.abs(x)</td><td>Gets the magnitude of x</td></tr>
         <tr><td>ccdsc.sign(x)</td><td>Returns x scaled to have magnitude 1</td></tr>
         <tr notop><th>&nbsp;</th></tr>
         <tr notop><td>ccdsc.exp(x)</td><td>Gets the exponential function of x</td></tr>
@@ -448,7 +476,7 @@
     }
     
     do {
-      input1.value = new ccdsc.CCDSC(...[1,2,3,4].map(x => Math.floor(Math.random()*7)-3), 0, 0, 0, 0).toString().replaceAll(" ","");
+      input1.value = new ccdsc.CCDSC(...[1,2,3,4,5,6,7,8].map(x => Math.floor(Math.random()*7)-3)).toString().replaceAll(" ","");
       input2.value = new ccdsc.CCDSC(...[1,2,3,4].map(x => Math.floor(Math.random()*7)-3), 0, 0, 0, 0).toString().replaceAll(" ","");
       run();
     } while (outputs[9].innerText.includes("undefined"));

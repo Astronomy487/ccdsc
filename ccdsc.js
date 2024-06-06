@@ -213,7 +213,7 @@ class ccdsc {
 				if (!(this.j || this.ij || this.e || this.ie || this.je || this.ije)) return new ccdsc.CCDSC(...complexLn(this.real, this.i), 0, 0, 0, 0, 0, 0);
 				if (!(this.e || this.ie || this.je || this.ije)) return new ccdsc.CCDSC(...complexSplitComplexLn(this.real, this.i, this.j, this.ij), 0, 0, 0, 0);
 				let ln_A = complexSplitComplexLn(this.real, this.i, this.j, this.ij);
-				let B_over_A = new CCDSC(this.e, this.ie, this.je, this.ije, 0, 0, 0, 0).over(new CCDSC(this.real, this.i, this.j, this.ij, 0, 0, 0, 0));
+				let B_over_A = new ccdsc.CCDSC(this.e, this.ie, this.je, this.ije, 0, 0, 0, 0).over(new ccdsc.CCDSC(this.real, this.i, this.j, this.ij, 0, 0, 0, 0));
 				return new ccdsc.CCDSC(
 					...ln_A,
 					B_over_A.real, B_over_A.i, B_over_A.j, B_over_A.ij
